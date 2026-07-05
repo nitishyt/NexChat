@@ -9,7 +9,7 @@ function useAuthUser() {
     queryKey:['authUser'],
     queryFn: FetchAuthUser,
     retry:false,
-    staleTime: Infinity,
+    staleTime: 0,
   })
   return {authenticatedUser: authUser.data?.user,isLoading: authUser.isLoading }
 }
