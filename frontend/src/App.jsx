@@ -18,7 +18,7 @@ import LayoutWrapper from './components/LayoutWrapper'
 
 
 function App() {
-
+console.log("Rendering App");
 
 const {authenticatedUser, isLoading} =useAuthUser()
 const isboarded = authenticatedUser?.isOnboarded ?? false
@@ -36,7 +36,7 @@ const isAuth = !!authenticatedUser
 
         {/* Protected Routes */}
         <Route path='/' element={<LayoutWrapper />}>
-          <Route index element={isAuth && isboarded ? <HomePage /> : <Navigate to={isAuth ? '/onboarding' : '/login'}/>} />
+          <Route index element={<div style={{ color: "red", fontSize: 40 }}>HOME ROUTE</div>} />
           <Route path='notifications' element={isAuth && isboarded ? <NotificationsPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
           <Route path='connection' element={isAuth && isboarded ? <ConnectionPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
           <Route path='chat/:id?' element={isAuth && isboarded ? <ChatPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />

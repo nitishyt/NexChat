@@ -43,7 +43,10 @@ const Layout = () => {
                   </nav>
                   {/* Page content here */}
                   <div className="flex-1 min-h-0 overflow-y-auto p-4">
-                    <Outlet/>
+          <>
+            <h1 style={{ color: "red" }}>OUTLET TEST</h1>
+            <Outlet />
+          </>
                   </div>
               </div>
                 {/* Sidebar */}
