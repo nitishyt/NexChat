@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: all;
+}
+
+/* =========================================================
+   STREAM THEME VARIABLES (v14 API) — scoped to .str-chat,
+   which Stream always applies to ChannelList/Channel regardless
+   of whether you pass a `theme` prop. Must load AFTER Stream's
+   own CSS import in main.jsx.
+   ========================================================= */
+.str-chat {
+  /* Accent — mentions, read receipts, links, focus states */
+  --str-chat__accent-primary: var(--color-primary);
+  --str-chat__border-utility-focused: var(--color-primary);
+
+  /* Message bubbles */
+  --str-chat__chat-bg-outgoing: var(--color-primary);
+  --str-chat__chat-bg-attachment-outgoing: var(--color-primary);
+  --str-chat__chat-bg-incoming: var(--color-base-200);
+  --str-chat__chat-text-outgoing: var(--color-primary-content);
+  --str-chat__chat-text-incoming: var(--color-base-content);
+  --str-chat__chat-reply-indicator-outgoing: color-mix(in oklch, var(--color-primary-content) 70%, transparent);
+
+  /* Links, inside and outside bubbles */
+  --str-chat__text-link: var(--color-primary);
+  --str-chat__chat-text-link: var(--color-primary-content);
+
+  /* Panel backgrounds — this is what makes the channel list
+     and message list panels match the theme */
+  --str-chat__background-core-elevation-1: var(--color-base-100);
+  --str-chat__background-core-app: var(--color-base-100);
+
+  /* Radii */
+  --str-chat__radius-max: 0.75rem;
+  --str-chat__button-radius-full: 0.5rem;
+
+  /* Avatar */
+  --str-chat__avatar-background-color: var(--color-primary);
+
+  /* Fallback — harmless if unused, covers text color on older
+     component internals that still read the classic variable */
+  --str-chat__message-bubble-color: var(--color-base-content);
+  --str-chat__text-color: var(--color-base-content);
+}
+/* Fix: typed message text + placeholder */
+.str-chat__message-textarea-container textarea,
+.str-chat__message-textarea {
+  color: var(--color-base-content) !important;
+}
+.str-chat__message-textarea-container textarea::placeholder {
+  color: color-mix(in oklch, var(--color-base-content) 50%, transparent) !important;
+}
+
+/* Fix: icons (attach button, send button, etc.) inheriting currentColor */
+.str-chat__message-input,
+.str-chat__message-input * {
+  color: var(--color-base-content);
+}
+.str-chat__message-input svg path,
+.str-chat__message-input svg rect,
+.str-chat__message-input svg circle {
+  fill: currentColor;
+}
+
+/* Also set Stream's dedicated icon-color variable as a belt-and-suspenders fix */
+.str-chat {
+  --str-chat__attachment-selector-button-icon-color: var(--color-base-content);
+  --str-chat__attachment-selector-button-icon-color-hover: var(--color-primary);
+  --str-chat__attachment-selector-actions-menu-button-icon-color: var(--color-base-content);
+  --str-chat__attachment-selector-actions-menu-button-icon-color-active: var(--color-primary);
+}
+
+.str-chat__message-actions-box svg path,
+.str-chat__message-actions-box-button svg path,
+.str-chat__message-options svg path {
+  fill: var(--color-base-content) !important;
+}
+
+.str-chat__thread {
+  @apply bg-base-100 text-base-content;
+}
+.str-chat__thread-header {
+  @apply bg-base-100 text-base-content border-b border-base-300;
+}
+.str-chat__thread-list {
+  @apply bg-base-100 text-base-content;
+}
+.str-chat__thread-header .str-chat__close-thread-button .str-chat__icon {
+   @apply text-base-content;
+}
+/* =========================================================
+   LAYOUT / STRUCTURAL overrides
+   ========================================================= */
+.str-chat__channel {
+  @apply flex items-center justify-center bg-transparent;
+}
+.str-chat__container {
+  @apply w-full h-[87vh] rounded-xl overflow-hidden;
+}
+.str-chat__main-panel {
+  @apply h-[87vh]!;
+}
+.str-chat__channel-header {
+  @apply bg-base-100 text-base-content border-b border-base-300;
+}
+.str-chat__list {
+  @apply bg-base-100 p-3;
+}
+.str-chat__message-input {
+  @apply bg-base-100 border-t border-base-300;
+}
+.str-chat__message-textarea {
+  @apply bg-base-100 text-base-content;
+}
+.str-chat__empty-channel {
+  @apply bg-transparent;
+}
+/* ===== General App Styles ===== */
+* {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  body {
+    font-family: "Inter", sans-serif;
+    @apply bg-base-200 text-base-content;
+  }
+}
+
+@layer components {
+  .flexCenter { @apply flex items-center justify-center; }
+  .flexStart  { @apply flex items-center justify-start; }
+  .flexEnd    { @apply flex items-center justify-end; }
+  .flexBetween{ @apply flex items-center justify-between; }
+}
+
+@layer utilities {
+  h1 { @apply text-[36px] md:text-[42px] font-bold; }
+  h2 { @apply text-[32px] md:text-[38px] font-semibold; }
+  h3 { @apply text-[28px] md:text-[36px] font-semibold; }
+  h4 { @apply text-[24px] md:text-[30px] font-semibold; }
+  h5 { @apply text-[20px] md:text-[24px] font-semibold; }
+  h6 { @apply text-[16px] md:text-[22px] font-semibold; }
+  .para { @apply leading-[1.3] text-[13px] opacity-60; }
+}
