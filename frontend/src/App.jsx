@@ -14,6 +14,7 @@ import useAuthUser from './hooks/useAuthUser'
 import LoadingPage from './components/LoadingPage'
 import TestDaisyUI from './pages/TestDaisyUI'
 import Layout from './components/Layout'
+import LayoutWrapper from './components/LayoutWrapper'
 
 
 function App() {
@@ -31,10 +32,10 @@ const isAuth = !!authenticatedUser
       <Routes>
         {/* public Routes */}
         <Route path='/signup' element= {isAuth ? <Navigate to={isboarded ? '/' : '/onboarding'} /> : <SignupPage /> } />
-        <Route path='/login' element={isAuth ? <Navigate to={isboarded ? '/' : '/onboarding'} /> : <LoginPage/> }/>
+        <Route path='/login' element={<LoginPage />} />
 
         {/* Protected Routes */}
-        <Route path='/' element={<Layout/>}>
+        <Route path='/' element={<LayoutWrapper />}>
           <Route index element={isAuth && isboarded ? <HomePage /> : <Navigate to={isAuth ? '/onboarding' : '/login'}/>} />
           <Route path='notifications' element={isAuth && isboarded ? <NotificationsPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
           <Route path='connection' element={isAuth && isboarded ? <ConnectionPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />

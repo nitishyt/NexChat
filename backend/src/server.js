@@ -14,10 +14,23 @@ const PORT=process.env.Port||5000;
 await connectDB()//establish connection
 
 //middleware setup
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://nexchat-1-37qd.onrender.com" // frontend url
+];
+
 app.use(cors({
-    origin: process.env.CLIENT_URL, // Allow requests from the frontend URL
-    credentials:true,
-}))
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
 app.use(express.json())
 app.use(cookieParser())
 
