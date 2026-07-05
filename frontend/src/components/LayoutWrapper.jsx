@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom"
 import useAuthUser from "../hooks/useAuthUser"
-import { Layout } from "lucide-react"
+import { Layout } from "./Layout"
+import LoadingPage from "./LoadingPage"
 
 function LayoutWrapper() {
   const { authenticatedUser, isLoading } = useAuthUser()

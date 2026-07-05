@@ -35,8 +35,17 @@ const isAuth = !!authenticatedUser
         <Route path='/login' element={<LoginPage />} />
 
         {/* Protected Routes */}
-        <Route path='/' element={<Layout />}>
-          <Route index element={<div style={{ color: "red", fontSize: 40 }}>HOME ROUTE</div>} />
+        <Route path='/' element={<LayoutWrapper />}>
+          <Route
+            index
+            element={
+              isAuth && isboarded ? (
+                <HomePage />
+              ) : (
+                <Navigate to={isAuth ? "/onboarding" : "/login"} />
+              )
+            }
+          />
           <Route path='notifications' element={isAuth && isboarded ? <NotificationsPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
           <Route path='connection' element={isAuth && isboarded ? <ConnectionPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
           <Route path='chat/:id?' element={isAuth && isboarded ? <ChatPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
