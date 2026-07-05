@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom"
 import useAuthUser from "../hooks/useAuthUser"
-import { Layout } from "./Layout"
-import LoadingPage from "./LoadingPage"
+import { Layout } from "./Layout.jsx"
+import LoadingPage from "./LoadingPage.jsx"
 
 function LayoutWrapper() {
   const { authenticatedUser, isLoading } = useAuthUser()
