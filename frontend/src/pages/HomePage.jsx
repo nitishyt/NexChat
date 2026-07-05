@@ -10,6 +10,7 @@ import NoRecommendedUsersFound from "../components/NoRecommendedUsersFound";
 import UserCard from "../components/UserCard";
 
 function HomePage() {
+  console.log("Rendering HomePage");
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
