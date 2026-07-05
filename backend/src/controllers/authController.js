@@ -84,14 +84,14 @@ export const login =async (req, res) => {
         }
 
         const token =  jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn:"1d"})
+        const isProduction = process.env.NODE_ENV === "production";
 
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:process.env.NODE_ENV==="production",
-            sameSite:"strict",
-            maxAge:24*60*60*1000 //1day
-        })
-
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
         res.status(200).json({message:"User logged in successfully",user})
 
     }catch(err){
