@@ -9,7 +9,7 @@ import chatRouter from "./routes/chatRoutes.js";
 
 
 const app=express();
-const Port=process.env.Port||5000;
+const PORT=process.env.Port||5000;
 
 await connectDB()//establish connection
 
@@ -29,6 +29,6 @@ app.get('/api/test', (req, res) => {
     res.json({ message: 'Server is running!' });
 });
 //start the server
-app.listen(Port,()=>{
-    console.log(`Server is running on port ${Port}`);
+app.listen(PORT,()=>{
+    console.log(`Server is running on port ${PORT}`);
 })
