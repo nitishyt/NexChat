@@ -1,3 +1,5 @@
+import useAuthUser from "../hooks/useAuthUser"
+
 function LayoutWrapper() {
   const { authenticatedUser, isLoading } = useAuthUser()
 
