@@ -50,13 +50,14 @@ export const signup = async (req, res) => {
 
         const token =  jwt.sign({userId:newUser._id},process.env.JWT_SECRET,{expiresIn:"1d"})
 
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:process.env.NODE_ENV==="production",
-            sameSite:"strict",
-            maxAge:24*60*60*1000
-        })
+        const isProduction = process.env.NODE_ENV === "production";
 
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
         res.status(201).json({message:"User created successfully",user:newUser})  
 
     }catch(err){
