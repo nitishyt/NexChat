@@ -11,6 +11,11 @@ const userSchema = mongoose.Schema({
     bio:{type:String,default:""},
     isOnboarded:{type:Boolean,default:false},
     friends:[{type:mongoose.Schema.Types.ObjectId,ref:"User"}],
+    refreshTokens: [{
+        tokenHash: { type: String, required: true },
+        expiresAt: { type: Date, required: true },
+        createdAt: { type: Date, default: Date.now },
+    }],
 },{timestamps:true})
 
 const User=mongoose.models.User || mongoose.model("User",userSchema)
