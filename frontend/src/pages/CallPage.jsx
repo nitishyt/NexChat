@@ -23,6 +23,7 @@ const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY
 
 
 const CallPage = () => {
+  console.log("Rendering CallPage");
 
   const {id:callId} = useParams()
 

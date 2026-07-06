@@ -4,6 +4,7 @@ import { getStreamToken } from '../../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import useAuthUser from '../hooks/useAuthUser'
 import toast from 'react-hot-toast'
+import CustomMessage from "../components/CustomMessage";
 import {
   Chat,
   Channel,
@@ -20,6 +21,7 @@ import { StreamChat } from 'stream-chat'
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY
 
 const ChatPage = () => {
+  console.log("Rendering ChatPage");
   const navigate = useNavigate();
   const { id: targetUserId } = useParams()
   const { authenticatedUser } = useAuthUser()
@@ -94,13 +96,11 @@ const ChatPage = () => {
 
   const callId = channel.id;
 
-  const callLink = `${window.location.origin}/call/${callId}`;
+await channel.sendMessage({
+  text: `VIDEO_CALL:${callId}`,
+});
 
-  await channel.sendMessage({
-    text: `📞 Join my video call:\n${callLink}`,
-  });
-
-  navigate(`/call/${callId}`);
+navigate(`/call/${callId}`);
 };
 
   const otherMember = Object.values(channel?.state?.members ?? {}).find(
@@ -118,7 +118,7 @@ const ChatPage = () => {
 
   return (
     <Chat client={chatClient}>
-      <Channel channel={channel}>
+      <Channel channel={channel}  Message={CustomMessage}>
         <Window>
           <div className='flex items-center justify-between gap-3 border-b border-base-300 bg-base-100 px-4 py-2 text-base-content'>
             <div className='flex min-w-0 items-center gap-3'>

@@ -35,7 +35,16 @@ console.log("isLoading:", isLoading);
       <Routes>
         {/* public Routes */}
         <Route path='/signup' element= {isAuth ? <Navigate to={isboarded ? '/' : '/onboarding'} /> : <SignupPage /> } />
-        <Route path='/login' element={<LoginPage />} />
+        <Route
+  path="/login"
+  element={
+    isAuth ? (
+      <Navigate to={isboarded ? "/" : "/onboarding"} replace />
+    ) : (
+      <LoginPage />
+    )
+  }
+/>
 
         {/* Protected Routes */}
         <Route path='/' element={<LayoutWrapper />}>
