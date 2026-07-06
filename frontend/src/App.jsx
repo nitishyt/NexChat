@@ -2,72 +2,80 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
-import HomePage from './pages/HomePage' 
+import HomePage from './pages/HomePage'
 import NotificationsPage from './pages/NotificationPage'
 import ConnectionPage from './pages/ConnectionPage'
 import ChatPage from './pages/ChatPage'
 import RequestedPage from './pages/RequestPage'
 import CallPage from './pages/CallPage'
-import OnboardingPage from './pages/OnboardingPage' 
+import OnboardingPage from './pages/OnboardingPage'
 import { Toaster } from 'react-hot-toast'
 import useAuthUser from './hooks/useAuthUser'
 import LoadingPage from './components/LoadingPage'
 import TestDaisyUI from './pages/TestDaisyUI'
-import Layout from './components/Layout'
 import LayoutWrapper from './components/LayoutWrapper'
 
-
 function App() {
-console.log("Rendering App");
+  const { authenticatedUser, isLoading } = useAuthUser()
+  const isAuth = !!authenticatedUser
+  const isOnboarded = authenticatedUser?.isOnboarded ?? false
 
-const {authenticatedUser, isLoading} =useAuthUser()
-const isboarded = authenticatedUser?.isOnboarded ?? false
+  if (isLoading) return <LoadingPage />
 
-if (isLoading) 
-  return <LoadingPage/>
-
-const isAuth = !!authenticatedUser
-console.log("Auth User:", authenticatedUser);
-console.log("isAuth:", !!authenticatedUser);
-console.log("isLoading:", isLoading);
   return (
     <main>
       <Routes>
-        {/* public Routes */}
-        <Route path='/signup' element= {isAuth ? <Navigate to={isboarded ? '/' : '/onboarding'} /> : <SignupPage /> } />
+        {/* Public routes */}
         <Route
-  path="/login"
-  element={
-    isAuth ? (
-      <Navigate to={isboarded ? "/" : "/onboarding"} replace />
-    ) : (
-      <LoginPage />
-    )
-  }
-/>
+          path="/signup"
+          element={
+            isAuth ? (
+              <Navigate to={isOnboarded ? "/" : "/onboarding"} replace />
+            ) : (
+              <SignupPage />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            isAuth ? (
+              <Navigate to={isOnboarded ? "/" : "/onboarding"} replace />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            !isAuth ? (
+              <Navigate to="/login" replace />
+            ) : isOnboarded ? (
+              <Navigate to="/" replace />
+            ) : (
+              <OnboardingPage />
+            )
+          }
+        />
 
-        {/* Protected Routes */}
-        <Route path='/' element={<LayoutWrapper />}>
-          <Route
-            index
-            element={
-              isAuth && isboarded ? (
-                <HomePage />
-              ) : (
-                <Navigate to={isAuth ? "/onboarding" : "/login"} />
-              )
-            }
-          />
-          <Route path='notifications' element={isAuth && isboarded ? <NotificationsPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
-          <Route path='connection' element={isAuth && isboarded ? <ConnectionPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
-          <Route path='chat/:id?' element={isAuth && isboarded ? <ChatPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
-          <Route path='requests' element={isAuth && isboarded ? <RequestedPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
-          <Route path='call/:id?' element={isAuth && isboarded ? <CallPage /> : <Navigate to={isAuth ? '/onboarding' : '/login'} />} />
+        {/* Protected routes — LayoutWrapper is the ONLY place that
+            checks auth/onboarded for everything nested under it */}
+        <Route path="/" element={<LayoutWrapper />}>
+          <Route index element={<HomePage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="connection" element={<ConnectionPage />} />
+          <Route path="chat/:id?" element={<ChatPage />} />
+          <Route path="requests" element={<RequestedPage />} />
+          <Route path="call/:id?" element={<CallPage />} />
         </Route>
-        <Route path='/onboarding' element={isAuth && !isboarded ? <OnboardingPage /> : <Navigate to={isAuth ? '/' : '/login'} />} />
-        <Route path='/test' element={<TestDaisyUI />}/>
+
+        <Route path="/test" element={<TestDaisyUI />} />
       </Routes>
-      <Toaster position='bottom-right' toastOptions={{ className:'!bg-base-100 !text-base-content' }} />
+      <Toaster
+        position="bottom-right"
+        toastOptions={{ className: '!bg-base-100 !text-base-content' }}
+      />
     </main>
   )
 }
