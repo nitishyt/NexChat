@@ -89,17 +89,19 @@ const ChatPage = () => {
     }
   }, [tokenData, authenticatedUser?._id, targetUserId])
 
-  const handleVideoCall = () => {
-    if(channel){
-      const callUrl = navigate(`/call/${channel.id}`);  
+  const handleVideoCall = async () => {
+  if (!channel) return;
 
-      channel.sendMessage({
-        text:`I've started a video call. Join me here: ${callUrl}`
-      })
+  const callId = channel.id;
 
-      toast.message('Video call link has been sent!')
-    }
-   }
+  const callLink = `${window.location.origin}/call/${callId}`;
+
+  await channel.sendMessage({
+    text: `📞 Join my video call:\n${callLink}`,
+  });
+
+  navigate(`/call/${callId}`);
+};
 
   const otherMember = Object.values(channel?.state?.members ?? {}).find(
     (member) => member?.user?.id && member.user.id !== authenticatedUser?._id,
