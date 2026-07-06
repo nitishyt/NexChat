@@ -27,6 +27,9 @@ if (isLoading)
   return <LoadingPage/>
 
 const isAuth = !!authenticatedUser
+console.log("Auth User:", authenticatedUser);
+console.log("isAuth:", !!authenticatedUser);
+console.log("isLoading:", isLoading);
   return (
     <main>
       <Routes>

@@ -1,19 +1,28 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { LoginUser } from "../../lib/api"
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { LoginUser } from "../../lib/api";
 
 const useLogin = () => {
-    const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-    const { mutate, isPending, error } = useMutation({
-        mutationFn: LoginUser,
-        onSuccess: (data) => {
-    queryClient.setQueryData(["authUser"], {
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: LoginUser,
+    onSuccess: async (data) => {
+      queryClient.setQueryData(["authUser"], {
         user: data.user,
-    });
-}
-    })
+      });
 
-    return { loginMutation: mutate, isPending, error }
-}
+      // Ensure the auth query is updated
+      await queryClient.invalidateQueries({
+        queryKey: ["authUser"],
+      });
 
-export default useLogin
+      navigate("/", { replace: true });
+    },
+  });
+
+  return { loginMutation: mutate, isPending, error };
+};
+
+export default useLogin;
