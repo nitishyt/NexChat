@@ -91,16 +91,16 @@ const ChatPage = () => {
   }, [tokenData, authenticatedUser?._id, targetUserId])
 
   const handleVideoCall = async () => {
-  if (!channel) return;
+    if (!channel) return;
 
-  const callId = channel.id;
+    const callId = channel.id;
 
-const callUrl = `${window.location.origin}/call/${channelId}`;
+    const callUrl = `${window.location.origin}/call/${callId}`;
 
-await channel.sendMessage({
-  text: `📹 Join my video call:\n${callUrl}`,
-});
-};
+    await channel.sendMessage({
+      text: `📹 Join my video call:\n${callUrl}`,
+    });
+  };
 
   const otherMember = Object.values(channel?.state?.members ?? {}).find(
     (member) => member?.user?.id && member.user.id !== authenticatedUser?._id,
@@ -117,7 +117,7 @@ await channel.sendMessage({
 
   return (
     <Chat client={chatClient}>
-      <Channel channel={channel}  Message={CustomMessage}>
+      <Channel channel={channel}>
         <Window>
           <div className='flex items-center justify-between gap-3 border-b border-base-300 bg-base-100 px-4 py-2 text-base-content'>
             <div className='flex min-w-0 items-center gap-3'>

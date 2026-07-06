@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CallControls,
   CallingState,
@@ -7,7 +7,6 @@ import {
   StreamTheme,
   StreamVideo,
   StreamVideoClient,
-  useCall,
   useCallStateHooks,
 } from "@stream-io/video-react-sdk";
 
@@ -25,24 +24,30 @@ const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY
 const CallPage = () => {
   console.log("Rendering CallPage");
 
-  const {id:callId} = useParams()
+  const { id: callId } = useParams()
 
-  const [client,setClient]= useState(null)
-  const [call,setCall] = useState(null)
-  const [isConnecting,setIsConnecting] = useState(true)
+  const [client, setClient] = useState(null)
+  const [call, setCall] = useState(null)
+  const [isConnecting, setIsConnecting] = useState(true)
 
-  const { authenticatedUser ,isLoading} = useAuthUser()
+  // Use a ref so cleanup always has access to the live client instance,
+  // not a stale closure value.
+  const clientRef = useRef(null)
 
-   const { data: tokenData } = useQuery({
+  const { authenticatedUser, isLoading } = useAuthUser()
+
+  const { data: tokenData } = useQuery({
     queryKey: ['streamToken'],
     queryFn: getStreamToken,
     enabled: !!authenticatedUser,
   })
 
-  useEffect(()=>{
+  useEffect(() => {
+    let cancelled = false
+
     const initCall = async () => {
-      if(!tokenData?.token || !authenticatedUser?._id || !callId) return
-      try{
+      if (!tokenData?.token || !authenticatedUser?._id || !callId) return
+      try {
         console.log('Initializing stream video client...')
 
         const user = {
@@ -57,44 +62,50 @@ const CallPage = () => {
           token: tokenData.token,
         })
 
-        const callInstance = videoClient.call('default',callId)
+        clientRef.current = videoClient
 
-        await callInstance.join({create:true})
+        const callInstance = videoClient.call('default', callId)
+        await callInstance.join({ create: true })
 
         console.log('joined call successfully')
 
-        setClient(videoClient)
-        setCall(callInstance)
-      }catch(err){
+        if (!cancelled) {
+          setClient(videoClient)
+          setCall(callInstance)
+        }
+      } catch (err) {
         console.error('Error initializing call:', err)
         toast.error('Failed to join the call. Please try again later.')
-      }finally{
-        setIsConnecting(false)
+      } finally {
+        if (!cancelled) setIsConnecting(false)
       }
     }
 
     initCall()
-     return () => {
-    call?.leave();
-    client?.disconnectUser();
-  };
-  } , [tokenData, authenticatedUser?._id, callId])
 
-  if(isLoading || isConnecting) {
-    return <LoadingPage/>
+    return () => {
+      cancelled = true
+      // Disconnect the real client stored in the ref, not the stale closure
+      clientRef.current?.disconnectUser().catch(console.error)
+      clientRef.current = null
+    }
+  }, [tokenData?.token, authenticatedUser?._id, callId])
+
+  if (isLoading || isConnecting) {
+    return <LoadingPage />
   }
   return (
     <div className='h-screen flexCenter flex-col'>
       <div className="relative">
         {client && call ? (
           <StreamVideo client={client}>
-          <StreamCall call={call}>
-            <CallContent />
-          </StreamCall>
+            <StreamCall call={call}>
+              <CallContent />
+            </StreamCall>
           </StreamVideo>
-        ):(
+        ) : (
           <div className='flex items-center justify-center h-full'>
-            <p>Could not initialize the call.Please try again later</p>
+            <p>Could not initialize the call. Please try again later.</p>
           </div>
         )}
       </div>
@@ -103,7 +114,7 @@ const CallPage = () => {
 }
 
 const CallContent = () => {
-   const { useCallCallingState } = useCallStateHooks();
+  const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
   const navigate = useNavigate();
 
