@@ -74,6 +74,6 @@ export async function getStreamToken() {
 }
 
 export const removeFriend = async (friendId) => {
-  const response = await axios.delete(`/users/friends/${friendId}`);
+  const response = await axiosInstance.delete(`/users/friends/${friendId}`);
   return response.data;
 };
