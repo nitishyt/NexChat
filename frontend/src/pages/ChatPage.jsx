@@ -4,7 +4,6 @@ import { getStreamToken } from '../../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import useAuthUser from '../hooks/useAuthUser'
 import toast from 'react-hot-toast'
-import CustomMessage from "../components/CustomMessage";
 import {
   Chat,
   Channel,
@@ -96,11 +95,11 @@ const ChatPage = () => {
 
   const callId = channel.id;
 
-await channel.sendMessage({
-  text: `VIDEO_CALL:${callId}`,
-});
+const callUrl = `${window.location.origin}/call/${channelId}`;
 
-navigate(`/call/${callId}`);
+await channel.sendMessage({
+  text: `📹 Join my video call:\n${callUrl}`,
+});
 };
 
   const otherMember = Object.values(channel?.state?.members ?? {}).find(
