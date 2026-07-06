@@ -92,7 +92,9 @@ export const login =async (req, res) => {
             sameSite: isProduction ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000,
         });
-        res.status(200).json({message:"User logged in successfully",user})
+        const safeUser = await User.findById(user._id).select("-password");
+
+        res.status(200).json({message:"User logged in successfully",user:safeUser})
 
     }catch(err){
         console.log("Error in login controller", err)
